@@ -1,0 +1,105 @@
+<!-- Navbar Start -->
+
+
+
+      <nav class="navbar navbar-expand-lg navbar-expand-md backg_round sticky-top">
+
+
+            <div class="d-flex">
+
+                <div class="mt-2 top_nav" >
+                    <button class="btn btn-white menu_hover dropdown" data-bs-toggle="dropdown"><i class="fa-solid fa-bars"></i></button>
+                    <span class="dropdown-menu mobile_nav">
+
+                        @php
+                 $categories = App\Models\Category::latest()->get();
+
+                @endphp
+                @foreach ($categories as $category)
+               <ul>
+
+                   <li ><a class="dropdown-item" href="{{ route('category', [$category->id, $category->slug]) }}">{{ $category->category_name }} </a>
+
+
+                    {{-- submenu start --}}
+                    @php
+                    $subcategories = App\Models\Subcategory::where('category_id', $category->id)->get();
+                     @endphp
+                        <ul>
+
+                            @foreach ($subcategories as $subcategory)
+                            <li><a href="{{ route('subcategory', [$subcategory->id, $subcategory->slug]) }}">{{ $subcategory->subcategory_name }}</a></li>
+                         @endforeach
+
+                       </ul>
+                   </li>
+
+               </ul>
+               @endforeach
+            </span>
+                </div>
+                {{-- logo image --}}
+                <div class="barnd_image ms-2">
+                    <a href="{{ route('Home') }}"><img class="navbar-brand" src="{{ asset('home/img/logo.png') }}" alt=""></a>
+                </div>
+            </div>
+
+            <form class="d-flex search_box me-5 " action="{{ route('products') }}" method="get">
+                <div class="d-flex search_box2">
+                    <input type="text" class="form-control" name="search" value="{{ $_GET['search'] ?? '' }}" placeholder="Search for products">
+                    <div class="input-group-append">
+                        <a href="{{ route('products') }}" class="input-group-text bg-transparent text-primary search_icon">
+                            <i class="fa fa-search"></i></a>
+                        </span>
+                    </div>
+                </div>
+            </form>
+                <div class="d-flex gap-4 log_in">
+                    <div class="btn-group login_btn_dis">
+                        <button type="button" class="log_btn btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdown">Register</button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <?php
+                                if(Auth::user()){
+                            ?>
+                                <a href="{{ route('userprofile') }}" class="dropdown-item" type="button">Dashboard</a>
+
+                                <form action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">
+                                        <span class="align-middle">Log Out</span>
+                                    </button>
+                                </form>
+                            <?php
+                                }else{
+                            ?>
+                                <a href="{{ route('login') }}" class="dropdown-item" type="button">Sign in</a>
+                                <a href="{{ route('register') }}" class="dropdown-item" type="button">Sign up</a>
+                            <?php
+                                }
+                            ?>
+                        </div>
+                    </div>
+                    <div class=" d-flex gap-3 mt-2 shoping_icon">
+                        <a href="{{ route('addtocart') }}" ><i class="fa-sharp fa-solid fa-cart-shopping i_shop"></i>
+                            {{-- <span class="badge text-secondary border border-secondary rounded-circle"
+                                    style="padding-bottom: 2px;">
+                                    <?php
+                                if(Auth::check()){
+                                    $cart_count = \App\Models\Cart::where('user_id',Auth::id())->count();
+
+                                    echo $cart_count." ";
+                                }else{
+                                    echo "0";
+                                }
+                            ?>
+                                </span> --}}
+                        </a>
+
+                        <a href=""><i class="fa-sharp fa-solid fa-heart i_shop"></i></a>
+                        <a href="{{ route('userprofile') }}"><i class="fa-solid fa-user"></i></a>
+                    </div>
+                </div>
+
+
+
+    </nav>
